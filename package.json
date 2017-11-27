@@ -1,0 +1,31 @@
+{
+  "name": "node-moduler",
+  "version": "0.0.5",
+  "description": "Command line tool allowing you to easily scaffold out new projects.",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "keywords": [
+    "modules",
+    "module",
+    "scaffold",
+    "command",
+    "line",
+    "tool"
+  ],
+  "author": "Elliot Mendiola <elliotmendiola@gmail.com> (elliot.codes)",
+  "license": "ISC",
+  "bin": {
+    "moduler": "lib/moduler.js"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "download-git-repo": "^1.0.1",
+    "glob": "^7.1.2",
+    "json-format": "^1.0.1",
+    "q": "^1.5.1",
+    "select-shell": "^1.0.0",
+    "split": "^1.0.1"
+  }
+}
