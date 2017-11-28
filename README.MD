@@ -13,7 +13,7 @@ npm install -g node-moduler
 ### Installing modules
 
 ```
-moduler install [github user]/[github repo]#[branch]
+moduler install [npm package]|-t local [folder path]|-t git [github user]/[github repo]#[branch]
 ```
 
 ### Importing modules
@@ -57,7 +57,7 @@ The files aren't specific to any one framework or file structure, that is up to 
 
 ## Creating Modules
 
-Modules can be installed in bulk or one at a time.  By default moduler installs the entire downloaded package, but including an install file in package.json/moduler/install allows you to over-ride this process.  Additionally whatever package.json file is in each imported module is checked for it's import file.  This file determines what files are imported and how they are modified, allowing you to customize file paths, file contents, etc.
+Modules can be installed in bulk or one at a time.  Using our moduler init tool you can create a single project for multiple modules, and even import existing code from other projects.
 
 ## Built With
 
@@ -66,10 +66,13 @@ Modules can be installed in bulk or one at a time.  By default moduler installs 
 * [json-format](https://github.com/luizstacio/json-format) - used to confirm proper formatting on package.json when modifying it.
 * [q](https://github.com/kriskowal/q) - promise library.
 * [select-shell](https://github.com/luizstacio/select-shell) - used to simplify the multiple select/select process for the CLI.
+* [cli-spinner](https://www.npmjs.com/package/cli-spinner) - used to easily create loaders/spinners on the console
+* [download-npm-package](https://www.npmjs.com/package/download-npm-package) - used to simplify downloading npm modules into specific directories
+* [untildify](https://www.npmjs.com/package/untildify) - used to convert ~ into the proper file path for linux users
 
 ## Author
 
-Elliot Mendiola  [email](mailto:elliotmendiola@gmail.com) [elliot.codes](https://www.elliot.codes) (in progress)
+Elliot Mendiola  [email](elliotmendiola@gmail.com) [elliot.codes](https://www.elliot.codes) (in progress)
 
 ## License
 

@@ -3,13 +3,13 @@ exports.run = function (args) {
 }
 
 exports.arguments = function () {
-	return " [module, [module, ...]];"
+	return ";"
 }
 
 exports.describeArguments = function () {
-	return ["[module, [module, ...]] IE: catalog home minify sass", "    This tells the system which specific modules to", "    remove from the current project"];
+	return [];
 }
 
 exports.description = function () {
-	return "This removes the specified modules from the current project"
+	return "This handles fully removing a module from a module project.";
 }

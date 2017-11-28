@@ -1,6 +1,6 @@
 {
   "name": "node-moduler",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Command line tool allowing you to easily scaffold out new projects.",
   "main": "./lib/index.js",
   "scripts": {
@@ -22,10 +22,25 @@
   "preferGlobal": true,
   "dependencies": {
     "download-git-repo": "^1.0.1",
+    "download-npm-package": "^3.1.11",
     "glob": "^7.1.2",
+    "inquirer": "^4.0.0",
     "json-format": "^1.0.1",
     "q": "^1.5.1",
     "select-shell": "^1.0.0",
-    "split": "^1.0.1"
-  }
+    "split": "^1.0.1",
+    "untildify": "^3.0.2"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elliotmendiola/moduler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elliotmendiola/moduler/issues"
+  },
+  "homepage": "https://github.com/elliotmendiola/moduler#readme"
 }

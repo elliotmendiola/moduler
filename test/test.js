@@ -5,13 +5,13 @@ var boolean = new Moduler ().boolean("Boolean", "\nThis is a yes or no question.
 
 new Moduler ()
 	//Text takes a key, the console description, and a function to handle skipping, just like ALL other types
-	.text("text", "\nThis is a text test.", function () {
+	.text("text", "\nThis is a text test", function () {
 		var runTextTest = (Math.floor(Math.random() * 1000) % 2) == 1;
 		if (!runTextTest) console.log("SKIPPING TEXT TEST");
 		return runTextTest;
 	})
 	//Number takes the default arguments and a min/max
-	.number("number", "\nThis is a number test.", function (result) {
+	.number("number", "\nThis is a number test", function (result) {
 		return !result.text
 	})
 	//Select takes the default arguments and a set of options, lets the user choose 1 of the given options
