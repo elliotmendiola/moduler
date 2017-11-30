@@ -1,6 +1,44 @@
 var Moduler = require("../lib/index.js");
 var beautify = require("json-format");
 
+var logInstalled = function (installed, prefix) {
+	prefix = prefix || "";
+	installed.forEach(function (val, key) {
+		if (key == installed.length - 1) {
+			if (Array.isArray(val.requirements) && val.requirements.length > 0) {
+				console.log(prefix + "└─┬─ " + val.module);
+				logInstalled(val.requirements, prefix + "  ");
+			} else {
+				console.log(prefix + "└─── " + val.module);
+			}
+		} else {
+			if (Array.isArray(val.requirements) && val.requirements.length > 0) {
+				console.log(prefix + "├─┬─ " + val.module);
+				logInstalled(val.requirements, prefix + "│ ");
+			} else {
+				console.log(prefix + "├─── " + val.module);
+			}
+		}
+	});
+}
+
+logInstalled([{
+	module: "Module 1",
+	requirements: [{
+		module: "Requirement 1",
+		requirements: [{
+			module: "Requirement 2"
+		}]
+	}, {
+		module: "Requirement 3"
+	}]
+}, {
+	module: "Module 2",
+	requirements: [{
+		module: "Requirement 4"
+	}]
+}]);
+
 var boolean = new Moduler ().boolean("Boolean", "\nThis is a yes or no question.").finish()
 
 new Moduler ()

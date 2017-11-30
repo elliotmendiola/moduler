@@ -3,7 +3,7 @@ var path = require("path");var fs = require('fs');
 var q = require("q");
 var spinner = require("cli-spinner").Spinner;
 var npm = require("download-npm-package");
-var installer = require("../lib/installer");
+var installer = require("../lib/installer.js");
 
 var deleteFolderRecursive = function(path) {
   if (fs.existsSync(path)) {
@@ -20,6 +20,51 @@ var deleteFolderRecursive = function(path) {
   }
 };
 
+var ensureDirectoryExistence = function (filePath) {
+	var dirname = path.dirname(filePath);
+	if (fs.existsSync(dirname)) {
+		return true;
+	}
+	ensureDirectoryExistence(dirname);
+	fs.mkdirSync(dirname);
+}
+
+var copyFolderRecursive = function (origin, destination) {
+	if (fs.existsSync(origin)) {
+		fs.readdirSync(origin).forEach(function (file, index) {
+			var current = origin + "/" + file;
+			var currentDestination = destination + "/" + file;
+			if (fs.lstatSync(current).isDirectory()) {
+				copyFolderRecursive(current, currentDestination);
+			} else {
+				ensureDirectoryExistence(currentDestination);
+				fs.writeFileSync(currentDestination, fs.readFileSync(current), { flag: "w+" });
+			}
+		});
+	}
+}
+
+var logInstalled = function (installed, prefix) {
+	prefix = prefix || "";
+	installed.forEach(function (val, key) {
+		if (key == installed.length - 1) {
+			if (Array.isArray(val.requirements) && val.requirements.length > 0) {
+				console.log(prefix + "└─┬─ " + val.module);
+				logInstalled(val.requirements, prefix + "  ");
+			} else {
+				console.log(prefix + "└─── " + val.module);
+			}
+		} else {
+			if (Array.isArray(val.requirements) && val.requirements.length > 0) {
+				console.log(prefix + "├─┬─ " + val.module);
+				logInstalled(val.requirements, prefix + "│ ");
+			} else {
+				console.log(prefix + "├─── " + val.module);
+			}
+		}
+	});
+}
+
 exports.run = function (args) {
 	console.log(path.join(__dirname, "../modules"));
 	var type = "npm";
@@ -29,8 +74,8 @@ exports.run = function (args) {
 	if (type != "local" && type != "git" && type != "npm") throw new Error ("Moduler ERROR: install command requires -t/--type argument to be local or git");
 
 	var download = q.defer();
+	var tempPath = path.join(__dirname, "../temp");
 	if (args.length == 1 && (type == "git" || type == "npm")) {
-		var tempPath = path.join(__dirname, "../temp");
 		deleteFolderRecursive(tempPath);
 		var downloadSpinner = new spinner ("Downloading Module ... %s ");
 		downloadSpinner.setSpinnerString(0);
@@ -40,26 +85,31 @@ exports.run = function (args) {
 				arg: args[0],
 				path: tempPath
 			}).then(function () {
-				download.resolve(tempPath);
+				fs.renameSync(path.join(tempPath, args[0]), path.join(tempPath, "npm:" + args[0]))
+				download.resolve(path.join(tempPath, "npm:" + args[0]));
 			}).catch(function (err) {
 				console.error(err);
 			})
 		} else if (type == "git") {
-			github(args[0], tempPath, function (err) {
+			github(args[0], path.join(tempPath, "git:" + args[0]), function (err) {
 				downloadSpinner.stop();
 				if (err) throw new Error (err);
 
 				console.log("\nModule Successfully Downloaded");
-				download.resolve(tempPath);
+				download.resolve(path.join(tempPath, args[0]), path.join(tempPath, "npm:" + args[0]));
 			});
 		}
 	} else if (args.length == 1 && type == "local") {
-		download.resolve(args[0]);
+		copyFolderRecursive(args[0], path.join(tempPath, "local"))
+		download.resolve(path.join(tempPath, "local"));
 	}
 
 	download.promise.then(function (tempPath) {
-		installer(path.join(tempPath, (type == "npm" ? "/" + args[0].split("@")[0] : "/"))).then(function () {
-			if (type == "git" || type == "npm") deleteFolderRecursive(tempPath);
+		installer.install(tempPath).then(function (installed) {
+			deleteFolderRecursive(path.join(__dirname, "../temp"));
+			if (!Array.isArray(installed)) installed = [installed];
+			logInstalled(installed);
+			process.exit(0);
 		});
 	})
 }
